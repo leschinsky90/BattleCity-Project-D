@@ -58,28 +58,24 @@ class Bullet {
     )
       strike = true;
 
-    let walls = document.querySelectorAll(".wall");
-    let toDelete = [];
+    let walls = [];
+    for (const obj of obstaclesLocation) {
+      if (obj.classList.contains("wall")) walls.push(obj);
+    }
     for (let el of walls) {
       if (insideRect(this.object, el)) {
         strike = true;
         if (
           el.classList.contains("brick") ||
-          (this.tank.level == 3 && el.classList.contains("concrete"))
+          (playerlvl == 3 && el.classList.contains("concrete"))
         ) {
-          toDelete.push(el);
+          el.classList.remove("obstacle");
+          el.classList.remove("wall");
+          el.classList.remove("brick");
+          el.classList.remove("concrete");
+          el.classList.add("air");
         }
       }
-    }
-    if (toDelete.length > 0) {
-      for (let el of toDelete) {
-        el.classList.remove("obstacle");
-        el.classList.remove("wall");
-        el.classList.remove("brick");
-        el.classList.remove("concrete");
-        el.classList.add("air");
-      }
-      toDelete.splice(0, toDelete.length);
     }
 
     let tanks = [];

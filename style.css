@@ -3,6 +3,7 @@
   padding: 0;
   margin: 0;
   position: relative;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 body {
   height: 100vh;
@@ -19,6 +20,30 @@ body {
   justify-content: center;
   align-items: center;
   z-index: -2;
+}
+.menu {
+  display: flex;
+  flex-direction: column;
+}
+.title {
+  width: 336px;
+  height: 136px;
+  background-image: url(sprites/effects/title.png);
+  background-size: 336px 136px;
+}
+.playChoice {
+  display: flex;
+  flex-direction: column;
+  top: 24px;
+  left: 64px;
+}
+.tankCursor {
+  width: 32px;
+  height: 32px;
+  background-image: url(sprites/tanks/player/lvl0/right1.png);
+  position: absolute;
+  top: 0;
+  left: -64px;
 }
 #field {
   width: 512px;
@@ -61,8 +86,14 @@ body {
 #lifesCount {
   font-weight: 900;
   font-size: 1.6rem;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
   text-align: center;
+}
+.frame {
+  position: absolute;
+  border: darkgreen 2px solid;
+  width: 32px;
+  height: 32px;
+  z-index: 3;
 }
 .scoreDisplay {
   display: flex;
@@ -154,7 +185,6 @@ body {
 .water {
   width: 16px;
   height: 16px;
-  background-color: blue;
 }
 .bonus {
   position: absolute;

@@ -221,4 +221,56 @@ class ArmoredTank extends Enemy {
     this.tank.classList.add("armoredTank");
     this.score = 400;
   }
+  destroy = (f = true) => {
+    if (hp == 0) {
+      this.life = false;
+      this.AITurnOff();
+      let blast = document.createElement("div");
+      blast.classList.add("blast", "effect");
+      let top = parseInt(getComputedStyle(this.tank).top);
+      let left = parseInt(getComputedStyle(this.tank).left);
+      blast.style.top = top + px;
+      blast.style.left = top + px;
+      this.life = false;
+      totalScore += this.score;
+      if (this.flashing) new Bonus().create();
+      setTimeout(() => this.tank.remove(), 100);
+      if (f) {
+        field.append(blast);
+        setTimeout(() => {
+          blast.style.backgroundImage = `url(sprites/effects/blast1.png)`;
+        }, 50);
+        setTimeout(() => {
+          blast.style.backgroundImage = `url(sprites/effects/blast2.png)`;
+        }, 100);
+        setTimeout(() => {
+          blast.style.backgroundImage = `url(sprites/effects/blast3.png)`;
+        }, 150);
+        setTimeout(() => {
+          blast.remove();
+          blast.style.width = "64px";
+          blast.style.height = "64px";
+          blast.style.backgroundSize = "64px";
+          blast.style.top = top - 8 + px;
+          blast.style.left = left - 8 + px;
+          blast.style.backgroundImage = `url(sprites/effects/bigblast1.png)`;
+          field.append(blast);
+        }, 250);
+        setTimeout(() => {
+          blast.style.backgroundImage = `url(sprites/effects/bigblast2.png)`;
+        }, 275);
+        setTimeout(() => {
+          blast.remove();
+        }, 450);
+        setTimeout(() => {
+          let score = document.createElement("span");
+          score.classList.add("score");
+          score.textContent = this.score;
+          gameSpace.prepend(score);
+          setTimeout(() => score.remove(), 1000);
+        }, 500);
+      }
+      levelEnemies[this.index - 1] = null;
+    } else if (hp > 0) hp--;
+  };
 }

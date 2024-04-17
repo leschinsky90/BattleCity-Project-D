@@ -38,6 +38,13 @@ class Water extends Obstacle {
   create = (container = field) => {
     this.object.classList.add("obstacle");
     this.object.classList.add("water");
+    this.object.style.backgroundImage = `url(sprites/Objects/water1.png)`;
+    let animationNumber = 2;
+    setInterval(() => {
+      this.object.style.backgroundImage = `url(sprites/Objects/water${animationNumber}.png)`;
+      if (animationNumber < 2) animationNumber++;
+      else animationNumber = 1;
+    }, 500);
     container.append(this.object);
   };
 }

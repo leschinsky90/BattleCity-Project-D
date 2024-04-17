@@ -1,10 +1,21 @@
 const px = "px";
 var enemiesInterval;
 var totalScore = 0;
+var obstaclesLocation = [];
+function fillObstaclesLocation() {
+  obstaclesLocation.splice(0, obstaclesLocation.length);
+  let obstacles = document.querySelectorAll(".obstacle");
+  for (const obst of obstacles) obstaclesLocation.push(obst);
+  for (const obj of headquaters.object.childNodes)
+    if (obj instanceof Brick) obstaclesLocation.push(obj);
+  obstaclesLocation.push(headquaters.head);
+}
 function rand(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 function gameOver() {
+  playerTank.shield = false;
+  document.querySelector(".shield").remove();
   clearInterval(enemiesInterval);
   let gameOverLettering = document.createElement("div");
   gameOverLettering.classList.add("gameOver");
@@ -24,6 +35,9 @@ function gameOver() {
   }, 5000);
 }
 function scoring(f = true) {
+  playerTank.shield = false;
+  let shield = document.querySelector(".shield");
+  if (shield) shield.remove();
   field.textContent = "";
   gameSpace.textContent = "";
   gameSpace.style.backgroundColor = "black";
@@ -268,19 +282,82 @@ let headquaters;
 let playerTank;
 var enemyFrags = [];
 
+function titleMenu() {
+  gameSpace.textContent = "";
+  gameSpace.style.backgroundColor = "black";
+  let menu = document.createElement("div");
+  menu.classList.add("menu");
+  let title = document.createElement("div");
+  title.classList.add("title");
+  let playChoice = document.createElement("div");
+  playChoice.classList.add("playChoice");
+  let choice1 = document.createElement("div");
+  let choice2 = document.createElement("div");
+  let text1 = document.createElement("h3");
+  let text2 = document.createElement("h3");
+  text1.style.color = "white";
+  text2.style.color = "white";
+  text1.style.fontWeight = "600";
+  text2.style.fontWeight = "600";
+  text1.style.fontSize = "1.75rem";
+  text2.style.fontSize = "1.75rem";
+  text1.textContent = "PLAY";
+  choice1.append(text1);
+  text2.textContent = "CONSTRUCTOR";
+  choice2.append(text2);
+  let cursor = document.createElement("div");
+  cursor.classList.add("tankCursor");
+  playChoice.append(cursor, choice1, choice2);
+  menu.append(title, playChoice);
+  gameSpace.append(menu);
+  let selected = 1;
+  let titleEvents = function (event) {
+    switch (event.code) {
+      case "KeyW":
+        if (selected == 2) {
+          cursor.style.top = "0";
+          selected = 1;
+        } else if (selected == 1) {
+          cursor.style.top = "35px";
+          selected = 2;
+        }
+        break;
+      case "KeyS":
+        if (selected == 1) {
+          cursor.style.top = "35px";
+          selected = 2;
+        } else if (selected == 2) {
+          cursor.style.top = "0";
+          selected = 1;
+        }
+        break;
+      case "Space":
+      case "Enter":
+        if (selected == 1) {
+          startGame();
+          window.removeEventListener("keydown", titleEvents);
+        } else if (selected == 2) {
+          startConstructor();
+          window.removeEventListener("keydown", titleEvents);
+        }
+    }
+  };
+  window.addEventListener("keydown", titleEvents);
+}
+
 function startLevel(lvlNumber) {
   gameSpace.classList.remove("scoreDisplay");
   gameSpace.style.backgroundColor = "rgb(100, 100, 100)";
   gameSpace.textContent = "";
   field.textContent = "";
   enemiesCount.textContent = "";
-  gameSpace.append(field);
-  gameSpace.append(infoPanel);
+  gameSpace.append(field, infoPanel);
   levelConvertor(levelArray[lvlNumber]);
   enemyFrags.splice(0, enemyFrags.length);
   playerTank = new Player(160, 480);
   playerTank.create();
   headquaters = new Headquarters();
+  fillObstaclesLocation();
   gamePress = function (event) {
     if (playerTank.life) playerTank.press(event);
   };
@@ -310,6 +387,7 @@ function startLevel(lvlNumber) {
 let lvl = 0;
 function startGame() {
   gameSpace.textContent = "";
+  gameSpace.style.backgroundColor = "rgb(100, 100, 100)";
   let stageNumber = document.createElement("h1");
   stageNumber.textContent = "STAGE " + (lvl + 1);
   stageNumber.style.fontSize = "30px";
@@ -340,4 +418,84 @@ function startGame() {
   };
   window.addEventListener("keydown", levelChoice);
 }
-startGame();
+function startConstructor() {
+  gameSpace.textContent = "";
+  gameSpace.style.backgroundColor = "rgb(100, 100, 100)";
+  gameSpace.append(field, infoPanel);
+  let lvl = createLevel();
+  levelConvertor(lvl);
+  let frame = document.createElement("div");
+  frame.classList.add("frame");
+  field.append(frame);
+  let x = 0,
+    y = 0;
+  constructorEvents = function (event) {
+    switch (event.code) {
+      case "KeyW":
+      case "ArrowUp":
+        if (y > 0) {
+          y--;
+          frame.style.top = parseInt(getComputedStyle(frame).top) - 32 + px;
+        }
+        break;
+      case "KeyS":
+      case "ArrowDown":
+        if (y < 15) {
+          y++;
+          frame.style.top = parseInt(getComputedStyle(frame).top) + 32 + px;
+        }
+        break;
+      case "KeyA":
+      case "ArrowLeft":
+        if (x > 0) {
+          x--;
+          frame.style.left = parseInt(getComputedStyle(frame).left) - 32 + px;
+        }
+        break;
+      case "KeyD":
+      case "ArrowRight":
+        if (x < 15) {
+          x++;
+          frame.style.left = parseInt(getComputedStyle(frame).left) + 32 + px;
+        }
+        break;
+      case "Space":
+        if (lvl[y][x] < 5) lvl[y][x]++;
+        if (lvl[y][x] == 5) lvl[y][x] = 0;
+        field.textContent = "";
+        levelConvertor(lvl);
+        field.append(frame);
+        frame.style.top = y * 32 + px;
+        frame.style.left = x * 32 + px;
+        break;
+      case "Enter":
+        console.log(JSON.stringify(lvl));
+        levelArray[0] = lvl;
+        startGame();
+        window.removeEventListener("keydown", constructorEvents);
+        break;
+    }
+  };
+  window.addEventListener("keydown", constructorEvents);
+}
+function createLevel() {
+  return [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  ];
+}
+titleMenu();

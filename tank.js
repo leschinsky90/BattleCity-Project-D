@@ -105,9 +105,9 @@ class Tank {
       move = false;
 
     /* */
+    fillObstaclesLocation();
     let arr = [];
-    let obst = document.querySelectorAll(".obstacle");
-    for (const el of obst) arr.push(el);
+    for (const el of obstaclesLocation) arr.push(el);
     let tanks = document.querySelectorAll(".tank");
     for (const el of tanks) arr.push(el);
     let em = document.querySelectorAll(".emergence");
@@ -127,9 +127,6 @@ class Tank {
         this.speed /= 2;
         onIce = false;
       }
-    }
-    if (touchRect(this.tank, headquaters.head, code)) {
-      move = false;
     }
     return move;
   };
