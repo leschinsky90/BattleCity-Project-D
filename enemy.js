@@ -26,6 +26,9 @@ class Enemy extends Tank {
     this.tank.style.backgroundImage = url;
   };
   destroy = (f = true) => {
+    enemyFrags.push(this.constructor.name.toLowerCase());
+    clearInterval(this.moveInterval);
+    clearInterval(this.shotInterval);
     this.life = false;
     this.AITurnOff();
     let blast = document.createElement("div");
@@ -68,6 +71,7 @@ class Enemy extends Tank {
       setTimeout(() => {
         let score = document.createElement("span");
         score.classList.add("score");
+        if (this.flashing) score.style.color = "red";
         score.textContent = this.score;
         gameSpace.prepend(score);
         setTimeout(() => score.remove(), 1000);
@@ -78,10 +82,10 @@ class Enemy extends Tank {
   AITurnOn = () => {
     this.moveInterval = setInterval(() => this.move(), 65);
     this.shotInterval = setInterval(() => {
-      if (rand(0, 4) == 0) {
+      if (rand(0, 8) == 0) {
         this.shot();
       }
-    }, 500);
+    }, 300);
   };
   AITurnOff = () => {
     clearInterval(this.moveInterval);
@@ -222,7 +226,10 @@ class ArmoredTank extends Enemy {
     this.score = 400;
   }
   destroy = (f = true) => {
-    if (hp == 0) {
+    if (this.hp == 0) {
+      enemyFrags.push(this.constructor.name.toLowerCase());
+      clearInterval(this.moveInterval);
+      clearInterval(this.shotInterval);
       this.life = false;
       this.AITurnOff();
       let blast = document.createElement("div");
@@ -232,10 +239,10 @@ class ArmoredTank extends Enemy {
       blast.style.top = top + px;
       blast.style.left = top + px;
       this.life = false;
-      totalScore += this.score;
       if (this.flashing) new Bonus().create();
       setTimeout(() => this.tank.remove(), 100);
       if (f) {
+        totalScore += this.score;
         field.append(blast);
         setTimeout(() => {
           blast.style.backgroundImage = `url(sprites/effects/blast1.png)`;
@@ -271,6 +278,6 @@ class ArmoredTank extends Enemy {
         }, 500);
       }
       levelEnemies[this.index - 1] = null;
-    } else if (hp > 0) hp--;
+    } else if (this.hp > 0) this.hp--;
   };
 }

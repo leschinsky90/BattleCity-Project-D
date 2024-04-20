@@ -117,17 +117,6 @@ class Tank {
         move = false;
       }
     }
-    let ice = document.querySelectorAll(".ice");
-    for (let el of ice) {
-      let onIce = false;
-      if (insideRect(this.tank, el)) {
-        this.speed *= 2;
-        onIce = true;
-      } else if (onIce) {
-        this.speed /= 2;
-        onIce = false;
-      }
-    }
     return move;
   };
   deleteBullet = () => {};

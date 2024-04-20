@@ -62,7 +62,7 @@ class Concrete extends Wall {
     this.object.classList.add("concrete");
   }
 }
-class Ice {
+/* class Ice {
   constructor() {
     this.object = document.createElement("div");
     this.object.classList.add("ice");
@@ -70,7 +70,7 @@ class Ice {
   create = (container = field) => {
     container.append(this.object);
   };
-}
+} */
 class Bush {
   constructor() {
     this.object = document.createElement("div");

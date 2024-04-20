@@ -97,7 +97,7 @@ class Player extends Tank {
         break;
       case "grenade":
         for (let enemy of levelEnemies) {
-          if (enemy != null) enemy.destroy();
+          if (enemy != null) enemy.destroy(false);
         }
         bonus = null;
         break;
@@ -149,6 +149,11 @@ class Player extends Tank {
       if (insideRect(this.tank, bonus.object)) {
         bonus.object.remove();
         this.recognizeBonus();
+        let score = document.createElement("span");
+        score.classList.add("score");
+        score.textContent = 500;
+        gameSpace.prepend(score);
+        setTimeout(() => score.remove(), 1000);
         totalScore += 500;
       }
   };

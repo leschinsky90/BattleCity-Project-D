@@ -111,10 +111,6 @@ class Bullet {
     if (this.type == "player") {
       if (tank.tank.classList.contains("enemy")) {
         tank.destroy();
-        clearInterval(tank.moveInterval);
-        clearInterval(tank.shotInterval);
-        tank.life = false;
-        enemyFrags.push(tank.constructor.name.toLowerCase());
       }
     }
     if (this.type == "enemy") {

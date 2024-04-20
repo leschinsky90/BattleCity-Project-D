@@ -15,7 +15,8 @@ function rand(min, max) {
 }
 function gameOver() {
   playerTank.shield = false;
-  document.querySelector(".shield").remove();
+  let shield = document.querySelector(".shield");
+  if (shield) shield.remove();
   clearInterval(enemiesInterval);
   let gameOverLettering = document.createElement("div");
   gameOverLettering.classList.add("gameOver");
@@ -79,7 +80,7 @@ function scoring(f = true) {
 
 function fillScoreContainer() {
   let scoreContainer = document.createElement("div");
-  scoreContainer.style.width = "142px";
+  scoreContainer.style.width = "162px";
   let scoreNumbers = document.createElement("div");
   let frags = document.createElement("div");
   let tanks = document.createElement("div");
@@ -218,12 +219,12 @@ function levelConvertor(lvl) {
           field.append(el);
           break;
 
-        case 5:
+        /* case 5:
           el = document.createElement("div");
           el.classList.add("container");
           for (let i = 0; i < 4; i++) new Ice().create(el);
           field.append(el);
-          break;
+          break; */
       }
     }
   }
@@ -477,25 +478,5 @@ function startConstructor() {
     }
   };
   window.addEventListener("keydown", constructorEvents);
-}
-function createLevel() {
-  return [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  ];
 }
 titleMenu();
